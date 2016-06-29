@@ -11,9 +11,11 @@ from regression_algorithm import regression_algorithm
 user = 'ribeck'
 host = 'localhost'
 dbname = 'statcast'
+pswd = 'pswd'
 #db = create_engine('postgres://%s%s/%s'%(user,host,dbname))
 con = None
-con = psycopg2.connect(database = dbname, user = user)
+#con = psycopg2.connect(database = dbname, user = user)
+con = psycopg2.connect(database = dbname, user = user, host = host, password = pswd)
 
 @app.route('/input')
 def statcast_input():
