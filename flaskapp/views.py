@@ -12,8 +12,8 @@ user = 'ribeck'
 host = 'localhost'
 dbname = 'statcast'
 #db = create_engine('postgres://%s%s/%s'%(user,host,dbname))
-#con = None
-#con = psycopg2.connect(database = dbname, user = user)
+con = None
+con = psycopg2.connect(database = dbname, user = user)
 
 @app.route('/input')
 def statcast_input():
