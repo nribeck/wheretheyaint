@@ -14,7 +14,8 @@ def regression_algorithm(player, previous_days):
 	pswd = ''
 	#db = create_engine('postgres://%s%s/%s'%(user,host,dbname))
 	con = None
-	con = psycopg2.connect(database = dbname, user = user)
+	#con = psycopg2.connect(database = dbname, user = user)
+	con = psycopg2.connect(database = dbname, user = user, host = host, password = pswd)
 
 	v_range = [10., 130.]
 	a_range = [-100., 100.]
