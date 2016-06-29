@@ -11,7 +11,7 @@ def regression_algorithm(player, previous_days):
 	user = 'ribeck'
 	host = 'localhost'
 	dbname = 'statcast'
-	pswd = ''
+	pswd = 'pass'
 	#db = create_engine('postgres://%s%s/%s'%(user,host,dbname))
 	con = None
 	#con = psycopg2.connect(database = dbname, user = user)
