@@ -15,13 +15,10 @@ dbname = 'statcast'
 #con = None
 #con = psycopg2.connect(database = dbname, user = user)
 
-@app.route('/input')
+@app.route('/index')
+@app.route('/')
 def statcast_input():
-	return render_template("input.html")
-
-@app.route('/test')
-def test():
-	return render_template("test.html")
+	return render_template("index.html")
 
 @app.route('/output')
 def statcast_output():
