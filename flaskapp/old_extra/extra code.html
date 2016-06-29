@@ -1,0 +1,40 @@
+      <div class = "box">
+        <div id="slg-chart" style="width: 300px;">
+        </div>
+        <script src="http://code.highcharts.com/highcharts.js"></script>
+        <script src="http://code.highcharts.com/modules/exporting.js"></script>  
+        <script type="text/javascript">
+            new Highcharts.Chart({{slg_chart|safe}})
+        </script>
+      </div>
+
+      <div class = "box">
+        <div id="hit-chart" style="width: 400px;">
+        </div>
+        <script type="text/javascript">
+            new Highcharts.Chart({{hit_chart|safe}})
+        </script>
+      </div>
+
+
+
+
+      <table class="table table-hover">
+        <tr><th>Player</th><th>Hit Speed</th><th>Event</th><th>Batted Ball Type</th></tr>
+        {% for ball in balls %}
+          <tr><td>{{ ball['player_name'] }}</td><td>{{ ball['hit_speed']}}</td><td> {{ ball['events'] }}</td><td> {{ ball['hit_type'] }}</td></tr>
+        {% endfor %}
+      </table>
+
+
+
+
+  slg_info = pd.DataFrame({"name": [player], "Expected": [exp_slg], "Actual": [slg], "Luck": [slg-exp_slg]})
+  slg_info.set_index('name')
+  
+
+  slg_chart = pandas_highcharts.core.serialize(slg_info, render_to='slg-chart', output_type='json', kind='bar', legend=True, title='Slugging on balls in play', xticks=[], fontsize=18, grid=True, use_index=True)
+
+  hit_chart = pandas_highcharts.core.serialize(df, y=['hit_speed'], render_to='hit-chart', output_type='json', zoom='xy', use_index=True)
+
+  return render_template("output.html", player = player, slg_chart = slg_chart, hit_chart = hit_chart, slg = format(slg, '.3f'), exp_slg = format(exp_slg, '.3f'), total_luck = format(total_luck, '.1f'), total_bip = total_bip, balls = balls)
