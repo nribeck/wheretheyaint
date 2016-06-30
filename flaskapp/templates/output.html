@@ -82,14 +82,29 @@
 
       <div class = "col-md-12" style="padding-top: 20px; float: right;">
         <form action = "/output" method = "GET">
-        <div class = "form-group">
-
+          <div class = "form-group">
           <center>
-          <input type = "text" id = "player_name" name = 'player_name' placeholder = "Enter Another Player">
-          <input type = "text" id = "previous_days" name = 'previous_days' placeholder = "Past Number of Days">
+            <select name="player_dropdown" width="400px">
+              <option value="none">Select Player</option>
+              {% for player in player_list %}
+                <option value="{{ player }}">{{player}}</option>
+              {% endfor %}
+            </select> 
+            <label for="player_name">OR</label>
+            <input type = "text" id = "player_name" name = 'player_name' placeholder = "Enter Player"><br><br>
+            <input type="checkbox" name="whole" value=1>
+            <label for="whole">check for all data &nbsp;&nbsp;&nbsp;OR</label>
+            <input type = "text" id = "previous_days" name = 'previous_days' placeholder = "Past Number of Days">
+          </center>
 
-          <button type = "submit" class = "btn btn-default btn-sm">Calculate Luck</button></center>
-        </div>
+            
+
+          </div>
+
+          <div>
+            <center><button type = "submit" class = "btn btn-default btn-sm">Calculate Luck</button></center>
+          </div>
+
         </form>
       </div>
 

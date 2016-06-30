@@ -11,20 +11,56 @@ from regression_algorithm import regression_algorithm
 user = 'ribeck'
 host = 'localhost'
 dbname = 'statcast'
+pswd = 'pass'
 #db = create_engine('postgres://%s%s/%s'%(user,host,dbname))
-#con = None
+con = None
 #con = psycopg2.connect(database = dbname, user = user)
+con = psycopg2.connect(database = dbname, user = user, host = host, password = pswd)
 
 @app.route('/index')
 @app.route('/')
 def statcast_input():
-	return render_template("index.html")
+	
+	player_list_query = "SELECT player_name FROM statcast_data_table WHERE hit_speed != 0 GROUP BY player_name HAVING count(*)>100 ORDER BY player_name"
+	player_list_df = pd.read_sql_query(player_list_query, con)
+	player_list = player_list_df['player_name'].values
+	last_names = [str.rsplit(None, 3)[-1].lower() for str in player_list]
+	for i in xrange(len(last_names)):
+		if last_names[i] == 'Jr.' or last_names[i] =='III':
+			last_names[i] = player_list[i].rsplit(None, 3)[-2].lower()
+
+	player_list_sorted = [x for (y,x) in sorted(zip(last_names, player_list))]
+
+	return render_template("index.html", player_list = player_list_sorted)
 
 @app.route('/output')
 def statcast_output():
-	#pull 'player_name' from input field and store it
-	player = request.args.get('player_name')
-	previous_days = request.args.get('previous_days')
+
+	player_list_query = "SELECT player_name FROM statcast_data_table WHERE hit_speed != 0 GROUP BY player_name HAVING count(*)>100 ORDER BY player_name"
+	player_list_df = pd.read_sql_query(player_list_query, con)
+	player_list = player_list_df['player_name'].values
+	last_names = [str.rsplit(None, 3)[-1].lower() for str in player_list]
+	for i in xrange(len(last_names)):
+		if last_names[i] == 'Jr.' or last_names[i] =='III':
+			last_names[i] = player_list[i].rsplit(None, 3)[-2].lower()
+
+	player_list_sorted = [x for (y,x) in sorted(zip(last_names, player_list))]
+
+	selection = request.args.get('player_dropdown')
+	if selection == 'none':
+		player = request.args.get('player_name')
+	else:
+		player = selection
+
+	#previous_days = request.args.get('previous_days')
+
+	all_check = request.args.get('whole')
+	print("check mark is")
+	print(all_check)
+	if all_check == '1':
+		previous_days = 1000
+	else:
+		previous_days = request.args.get('previous_days')
 
 	#will have to alter any other algorithm to take dates
 	balls, date_list, slg, exp_slg, total_bip = regression_algorithm(player, previous_days)
@@ -64,7 +100,7 @@ def statcast_output():
 		else :
 			luck_desc = 'very unlucky'	
 
-	return render_template("output.html", date = date_list, exp_bases = exp_bases.tolist(), actual_bases = actual_bases.tolist(), luck_bases = luck_bases.tolist(), player = player, slg = slg, exp_slg = exp_slg, luck = luck, luck_desc = luck_desc, balls = balls, hit_chart_data1 = hit_chart_data1, hit_chart_data2 = hit_chart_data2, hit_chart_data3 = hit_chart_data3, hit_chart_data4 = hit_chart_data4, hit_chart_data5 = hit_chart_data5, hit_chart_data6 = hit_chart_data6, hit_chart_data7 = hit_chart_data7)
+	return render_template("output.html", date = date_list, exp_bases = exp_bases.tolist(), actual_bases = actual_bases.tolist(), luck_bases = luck_bases.tolist(), player = player, slg = slg, exp_slg = exp_slg, luck = luck, luck_desc = luck_desc, player_list = player_list_sorted, balls = balls, hit_chart_data1 = hit_chart_data1, hit_chart_data2 = hit_chart_data2, hit_chart_data3 = hit_chart_data3, hit_chart_data4 = hit_chart_data4, hit_chart_data5 = hit_chart_data5, hit_chart_data6 = hit_chart_data6, hit_chart_data7 = hit_chart_data7)
 
 
 
