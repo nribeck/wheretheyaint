@@ -17,10 +17,7 @@ con = None
 #con = psycopg2.connect(database = dbname, user = user)
 con = psycopg2.connect(database = dbname, user = user, host = host, password = pswd)
 
-@app.route('/index')
-@app.route('/')
-def statcast_input():
-	
+def get_player_list():
 	player_list_query = "SELECT player_name FROM statcast_data_table WHERE hit_speed != 0 GROUP BY player_name HAVING count(*)>100 ORDER BY player_name"
 	player_list_df = pd.read_sql_query(player_list_query, con)
 	player_list = player_list_df['player_name'].values
@@ -30,21 +27,22 @@ def statcast_input():
 			last_names[i] = player_list[i].rsplit(None, 3)[-2].lower()
 
 	player_list_sorted = [x for (y,x) in sorted(zip(last_names, player_list))]
+
+	return player_list_sorted, last_names
+
+
+@app.route('/index')
+@app.route('/')
+def statcast_input():
+	
+	player_list_sorted, last_names = get_player_list()
 
 	return render_template("index.html", player_list = player_list_sorted)
 
 @app.route('/output')
 def statcast_output():
 
-	player_list_query = "SELECT player_name FROM statcast_data_table WHERE hit_speed != 0 GROUP BY player_name HAVING count(*)>100 ORDER BY player_name"
-	player_list_df = pd.read_sql_query(player_list_query, con)
-	player_list = player_list_df['player_name'].values
-	last_names = [str.rsplit(None, 3)[-1].lower() for str in player_list]
-	for i in xrange(len(last_names)):
-		if last_names[i] == 'Jr.' or last_names[i] =='III':
-			last_names[i] = player_list[i].rsplit(None, 3)[-2].lower()
-
-	player_list_sorted = [x for (y,x) in sorted(zip(last_names, player_list))]
+	player_list_sorted, last_names = get_player_list()
 
 	selection = request.args.get('player_dropdown')
 	if selection == 'none':
