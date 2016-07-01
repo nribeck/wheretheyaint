@@ -117,6 +117,10 @@ def statcast_output():
 def slides():
 	return render_template("slides.html")
 
+@app.route('/contact')
+def contact():
+		return render_template("contact.html")
+
 @app.errorhandler(400)
 def page_not_found(e):
     return render_template('error.html'), 400
