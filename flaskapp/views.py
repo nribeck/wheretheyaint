@@ -113,13 +113,25 @@ def statcast_output():
 	return render_template("output.html", date = date_list, exp_bases = exp_bases.tolist(), actual_bases = actual_bases.tolist(), luck_bases = luck_bases.tolist(), player = player, slg = slg, exp_slg = exp_slg, luck = luck, luck_desc = luck_desc, name_info = name_info, balls = balls, hit_chart_data1 = hit_chart_data1, hit_chart_data2 = hit_chart_data2, hit_chart_data3 = hit_chart_data3, hit_chart_data4 = hit_chart_data4, hit_chart_data5 = hit_chart_data5, hit_chart_data6 = hit_chart_data6, hit_chart_data7 = hit_chart_data7)
 
 
+@app.route('/slides')
+def slides():
+	return render_template("slides.html")
+
 @app.errorhandler(400)
 def page_not_found(e):
     return render_template('error.html'), 400
 
+@app.errorhandler(403)
+def page_not_found(e):
+    return render_template('error.html'), 403
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('error.html'), 404
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('error.html'), 500
 
 
 
