@@ -5,6 +5,7 @@ from sqlalchemy_utils import database_exists, create_database
 import pandas as pd
 import numpy as np
 import psycopg2
+from itertools import izip
 from flask import request
 from regression_algorithm import regression_algorithm
 
@@ -21,30 +22,39 @@ def get_player_list():
 	player_list_query = "SELECT player_name FROM statcast_data_table WHERE hit_speed != 0 GROUP BY player_name HAVING count(*)>100 ORDER BY player_name"
 	player_list_df = pd.read_sql_query(player_list_query, con)
 	player_list = player_list_df['player_name'].values
-	last_names = [str.rsplit(None, 3)[-1].lower() for str in player_list]
+	last_names = [str.rsplit(None, 3)[-1] for str in player_list]
+	last_names_lower = [i.lower() for i in last_names]
 	for i in xrange(len(last_names)):
 		if last_names[i] == 'Jr.' or last_names[i] =='III':
-			last_names[i] = player_list[i].rsplit(None, 3)[-2].lower()
+			last_names[i] = player_list[i].rsplit(None, 3)[-2]
+			last_names_lower[i] = last_names[i].lower()
 
-	player_list_sorted = [x for (y,x) in sorted(zip(last_names, player_list))]
+	player_list_sorted = [y for (x,y) in sorted(izip(last_names_lower, player_list))]
+	last_names_sorted = [y for (x,y) in sorted(izip(last_names_lower, last_names))]
+	first_names_sorted = [x.replace(' '+y, '') for (x,y) in izip(player_list_sorted, last_names_sorted)]
+	formatted_name = [x + ', ' + y for (x,y) in izip(last_names_sorted, first_names_sorted)]
+	name_info = []
+	for i in xrange(len(player_list)):
+		name_info.append(dict(full_name = player_list_sorted[i], formatted_name = formatted_name[i]))
 
-	return player_list_sorted, last_names
+	return name_info
 
 
 @app.route('/index')
 @app.route('/')
 def statcast_input():
 	
-	player_list_sorted, last_names = get_player_list()
+	name_info = get_player_list()
 
-	return render_template("index.html", player_list = player_list_sorted)
+	return render_template("index.html", name_info = name_info)
 
 @app.route('/output')
 def statcast_output():
 
-	player_list_sorted, last_names = get_player_list()
+	name_info = get_player_list()
 
 	selection = request.args.get('player_dropdown')
+	print(selection)
 	if selection == 'none':
 		player = request.args.get('player_name')
 	else:
@@ -53,8 +63,6 @@ def statcast_output():
 	#previous_days = request.args.get('previous_days')
 
 	all_check = request.args.get('whole')
-	print("check mark is")
-	print(all_check)
 	if all_check == '1':
 		previous_days = 1000
 	else:
@@ -98,7 +106,7 @@ def statcast_output():
 		else :
 			luck_desc = 'very unlucky'	
 
-	return render_template("output.html", date = date_list, exp_bases = exp_bases.tolist(), actual_bases = actual_bases.tolist(), luck_bases = luck_bases.tolist(), player = player, slg = slg, exp_slg = exp_slg, luck = luck, luck_desc = luck_desc, player_list = player_list_sorted, balls = balls, hit_chart_data1 = hit_chart_data1, hit_chart_data2 = hit_chart_data2, hit_chart_data3 = hit_chart_data3, hit_chart_data4 = hit_chart_data4, hit_chart_data5 = hit_chart_data5, hit_chart_data6 = hit_chart_data6, hit_chart_data7 = hit_chart_data7)
+	return render_template("output.html", date = date_list, exp_bases = exp_bases.tolist(), actual_bases = actual_bases.tolist(), luck_bases = luck_bases.tolist(), player = player, slg = slg, exp_slg = exp_slg, luck = luck, luck_desc = luck_desc, name_info = name_info, balls = balls, hit_chart_data1 = hit_chart_data1, hit_chart_data2 = hit_chart_data2, hit_chart_data3 = hit_chart_data3, hit_chart_data4 = hit_chart_data4, hit_chart_data5 = hit_chart_data5, hit_chart_data6 = hit_chart_data6, hit_chart_data7 = hit_chart_data7)
 
 
 

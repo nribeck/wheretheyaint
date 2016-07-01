@@ -86,8 +86,8 @@
           <center>
             <select name="player_dropdown" width="400px">
               <option value="none">Select Player</option>
-              {% for player in player_list %}
-                <option value="{{ player }}">{{player}}</option>
+              {% for name in name_info %}
+                <option value="{{name['full_name']}}">{{name['formatted_name']}}</option>
               {% endfor %}
             </select> 
             <label for="player_name">OR</label>
