@@ -40,6 +40,8 @@ def regression_algorithm(player, previous_days):
 	query_start_day = today - datetime.timedelta(days = int(previous_days))
 	query_start_day_string = query_start_day.strftime('%Y-%m-%d')
 
+	player = player.replace("'", "''")#fix for names with apostrophes in them
+
 	statcast_query = "SELECT player_name, hit_speed, hit_angle, events, game_date, (CASE WHEN events='Single' THEN 1 WHEN events='Double' THEN 2 WHEN events='Triple' THEN 3 WHEN events='Home Run' THEN 4 ELSE 0 END) AS bases_acquired FROM statcast_data_table WHERE hit_speed != 0 AND game_date >= '%s' AND player_name = '%s';" % (query_start_day_string, player)
 	statcast_results = pd.read_sql_query(statcast_query, con)
 		
