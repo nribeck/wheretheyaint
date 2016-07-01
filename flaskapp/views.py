@@ -54,11 +54,13 @@ def statcast_output():
 	name_info = get_player_list()
 
 	selection = request.args.get('player_dropdown')
-	print(selection)
 	if selection == 'none':
 		player = request.args.get('player_name')
 	else:
 		player = selection
+	if player == '':
+		return render_template('error.html')
+
 
 	#previous_days = request.args.get('previous_days')
 
@@ -67,6 +69,8 @@ def statcast_output():
 		previous_days = 1000
 	else:
 		previous_days = request.args.get('previous_days')
+	if previous_days == '':
+		return render_template('error.html')
 
 	#will have to alter any other algorithm to take dates
 	balls, date_list, slg, exp_slg, total_bip = regression_algorithm(player, previous_days)
@@ -108,6 +112,14 @@ def statcast_output():
 
 	return render_template("output.html", date = date_list, exp_bases = exp_bases.tolist(), actual_bases = actual_bases.tolist(), luck_bases = luck_bases.tolist(), player = player, slg = slg, exp_slg = exp_slg, luck = luck, luck_desc = luck_desc, name_info = name_info, balls = balls, hit_chart_data1 = hit_chart_data1, hit_chart_data2 = hit_chart_data2, hit_chart_data3 = hit_chart_data3, hit_chart_data4 = hit_chart_data4, hit_chart_data5 = hit_chart_data5, hit_chart_data6 = hit_chart_data6, hit_chart_data7 = hit_chart_data7)
 
+
+@app.errorhandler(400)
+def page_not_found(e):
+    return render_template('error.html'), 400
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('error.html'), 404
 
 
 
