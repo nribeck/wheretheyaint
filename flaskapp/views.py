@@ -61,16 +61,16 @@ def statcast_output():
 	if player == '':
 		return render_template('error.html')
 
-
-	#previous_days = request.args.get('previous_days')
-
-	all_check = request.args.get('whole')
-	if all_check == '1':
-		previous_days = 1000
-	else:
-		previous_days = request.args.get('previous_days')
+	previous_days = request.args.get('previous_days')
 	if previous_days == '':
+		previous_days = 1000
+
+	try:
+   		previous_days = int(previous_days)
+	except ValueError:
 		return render_template('error.html')
+
+		
 
 	#will have to alter any other algorithm to take dates
 	balls, date_list, slg, exp_slg, total_bip = regression_algorithm(player, previous_days)
