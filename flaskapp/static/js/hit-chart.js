@@ -8,7 +8,7 @@ $(function () {
         title: {
             text: 'Batted-Ball Properties for '+player,
                 style: {
-                    fontSize: '24px',
+                    fontSize: '20px',
                     color: 'black'
                 }
         },
@@ -17,7 +17,7 @@ $(function () {
             align: 'right',
             verticalAlign: 'middle',
             itemStyle: {
-                 fontSize:'20',
+                 fontSize:'18',
                  color: 'black'
              }
         },
@@ -28,13 +28,13 @@ $(function () {
             title: {
                 text: 'Hit speed',
                     style: {
-                        fontSize: '20px',
+                        fontSize: '18px',
                         color: 'black'
                     }
             },
             labels: {
                 style: {
-                    fontSize:'16px',
+                    fontSize:'14px',
                     color: 'black'
                 }
             }
@@ -46,13 +46,13 @@ $(function () {
             title: {
                 text: 'Hit angle',
                     style: {
-                        fontSize: '20px',
+                        fontSize: '18px',
                         color: 'black'
                     }
             },
             labels: {
                 style: {
-                    fontSize:'16px',
+                    fontSize:'14px',
                     color: 'black'
                 }
             }
