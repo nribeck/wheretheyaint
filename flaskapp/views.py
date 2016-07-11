@@ -73,7 +73,7 @@ def statcast_output():
 		
 
 	#will have to alter any other algorithm to take dates
-	balls, date_list, slg, exp_slg, total_bip = regression_algorithm(player, previous_days)
+	balls, date_list, formatted_name, slg, exp_slg, total_bip = regression_algorithm(player, previous_days)
 
 	hit_chart_data1 = [[balls[i]['hit_speed'], balls[i]['hit_angle']] for i in xrange(len(balls)) if balls[i]['hit_type']==0]
 	hit_chart_data2 = [[balls[i]['hit_speed'], balls[i]['hit_angle']] for i in xrange(len(balls)) if balls[i]['hit_type']==1]
@@ -110,7 +110,7 @@ def statcast_output():
 		else :
 			luck_desc = 'very unlucky'	
 
-	return render_template("output.html", date = date_list, exp_bases = exp_bases.tolist(), actual_bases = actual_bases.tolist(), luck_bases = luck_bases.tolist(), player = player, slg = slg, exp_slg = exp_slg, luck = luck, luck_desc = luck_desc, name_info = name_info, balls = balls, hit_chart_data1 = hit_chart_data1, hit_chart_data2 = hit_chart_data2, hit_chart_data3 = hit_chart_data3, hit_chart_data4 = hit_chart_data4, hit_chart_data5 = hit_chart_data5, hit_chart_data6 = hit_chart_data6, hit_chart_data7 = hit_chart_data7)
+	return render_template("output.html", date = date_list, exp_bases = exp_bases.tolist(), actual_bases = actual_bases.tolist(), luck_bases = luck_bases.tolist(), player = formatted_name, slg = slg, exp_slg = exp_slg, luck = luck, luck_desc = luck_desc, name_info = name_info, balls = balls, hit_chart_data1 = hit_chart_data1, hit_chart_data2 = hit_chart_data2, hit_chart_data3 = hit_chart_data3, hit_chart_data4 = hit_chart_data4, hit_chart_data5 = hit_chart_data5, hit_chart_data6 = hit_chart_data6, hit_chart_data7 = hit_chart_data7)
 
 
 @app.route('/slides')

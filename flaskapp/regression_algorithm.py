@@ -42,14 +42,15 @@ def regression_algorithm(player, previous_days):
 
 	player = player.replace("'", "''")#fix for names with apostrophes in them
 
-	statcast_query = "SELECT player_name, hit_speed, hit_angle, events, game_date, (CASE WHEN events='Single' THEN 1 WHEN events='Double' THEN 2 WHEN events='Triple' THEN 3 WHEN events='Home Run' THEN 4 ELSE 0 END) AS bases_acquired FROM statcast_data_table WHERE hit_speed != 0 AND game_date >= '%s' AND player_name = '%s';" % (query_start_day_string, player)
+	statcast_query = "SELECT player_name, hit_speed, hit_angle, events, game_date, (CASE WHEN events='Single' THEN 1 WHEN events='Double' THEN 2 WHEN events='Triple' THEN 3 WHEN events='Home Run' THEN 4 ELSE 0 END) AS bases_acquired FROM statcast_data_table WHERE hit_speed != 0 AND game_date >= '%s' AND UPPER(player_name) = '%s';" % (query_start_day_string, unicode.upper(player))
 	statcast_results = pd.read_sql_query(statcast_query, con)
+	formatted_name = statcast_results.iloc[0]['player_name']
 		
-	fangraphs_query = "SELECT name, spd FROM fangraphs_data_table WHERE name = '%s';" % player
+	fangraphs_query = "SELECT name, spd FROM fangraphs_data_table WHERE UPPER(name) = '%s';" % unicode.upper(player)
 	fangraphs_results = pd.read_sql_query(fangraphs_query, con)
 	spd = fangraphs_results.iloc[0]['spd']
 
-	fangraphs_bb_query = "SELECT name, pull FROM fangraphs_bb_data_table WHERE name = '%s';" % player
+	fangraphs_bb_query = "SELECT name, pull FROM fangraphs_bb_data_table WHERE UPPER(name) = '%s';" % unicode.upper(player)
 	fangraphs_bb_results = pd.read_sql_query(fangraphs_bb_query, con)
 	pull = fangraphs_bb_results.iloc[0]['pull']
 
@@ -73,4 +74,4 @@ def regression_algorithm(player, previous_days):
 	slg = float(total_bases)/float(total_bip)
 	exp_slg = y_int + np.sum((coeffs[0:7] * hit_type_counts) / float(total_bip)) + coeffs[7] * spd + coeffs[8] * pull
 
-	return balls, date_list, slg, exp_slg, total_bip
+	return balls, date_list, formatted_name, slg, exp_slg, total_bip
