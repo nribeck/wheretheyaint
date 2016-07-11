@@ -3,8 +3,7 @@ $(function () {
         exporting: { enabled: false },
         credits: { enabled: false },
         chart: {
-            type: 'line',
-            zoomType: 'xy'
+            type: 'line'
         },
         title: {
             text: ''

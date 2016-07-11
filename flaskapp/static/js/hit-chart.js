@@ -13,11 +13,14 @@ $(function () {
                 }
         },
         legend: {
+            backgroundColor: 'white',
+            borderWidth: 1,
             layout: 'vertical',
             align: 'right',
-            verticalAlign: 'middle',
+            verticalAlign: 'top',
+            floating: true,
             itemStyle: {
-                 fontSize:'18',
+                 fontSize:'14',
                  color: 'black'
              }
         },
