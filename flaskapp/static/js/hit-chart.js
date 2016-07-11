@@ -3,7 +3,9 @@ $(function () {
         exporting: { enabled: false },
         credits: { enabled: false },
         chart: {
-            type: 'scatter'
+            type: 'scatter',
+            marginTop: 100,
+            spacingLeft: 0
         },
         title: {
             text: 'Batted-Ball Properties for '+player,
@@ -13,6 +15,7 @@ $(function () {
                 }
         },
         legend: {
+            y:40,
             backgroundColor: 'white',
             borderWidth: 1,
             layout: 'vertical',
